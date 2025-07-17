@@ -1,0 +1,1635 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zarnigor Umaraliyeva - Fullstack Developer</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='10' y='10' width='80' height='80' rx='10' fill='%232F4F4F'/%3E%3Ctext x='50' y='65' font-family='Arial,sans-serif' font-size='50' font-weight='bold' text-anchor='middle' fill='%23FFFFF0'%3EZ%3C/text%3E%3C/svg%3E">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Montserrat:wght@400;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #2F4F4F;
+            /* DarkSlateGrey */
+            --primary-light: #FFFFF0;
+            /* Ivory */
+            --accent-turquoise: #40E0D0;
+            /* Turquoise */
+            --accent-salmon: #FA8072;
+            /* Salmon */
+            --header-border: #1C3A3A;
+            /* Darker DarkSlateGrey */
+            --menu-bg: linear-gradient(135deg, #2F4F4F 0%, #4682B4 50%, #40E0D0 100%);
+            --gradient-bg: linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #2F4F4F 75%, #4682B4 100%);
+            --section-bg-dark: rgba(47, 79, 79, 0.3);
+            --section-border-color: rgba(255, 255, 240, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', 'Montserrat', sans-serif;
+            background: var(--primary-dark);
+            color: var(--primary-light);
+            overflow-x: hidden;
+        }
+
+        /* Splash Screen */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeOutSplash 1s ease-out 3s forwards;
+        }
+
+        @keyframes fadeOutSplash {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        .splash-text {
+            font-size: 5rem;
+            font-weight: bold;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+        }
+
+        .splash-text span {
+            display: inline-block;
+            color: transparent;
+            -webkit-text-stroke: 3px var(--primary-light);
+            animation: fillText 0.8s ease-in-out forwards;
+            animation-delay: calc(var(--i) * 0.15s);
+        }
+
+        @keyframes fillText {
+            to {
+                color: var(--primary-light);
+                -webkit-text-stroke: 3px var(--primary-light);
+            }
+        }
+
+        /* Main Container */
+        .main-container {
+            min-height: 100vh;
+            background: var(--gradient-bg);
+            position: relative;
+            opacity: 0;
+            animation: fadeInMain 1s ease-in-out 3.5s forwards;
+        }
+
+        @keyframes fadeInMain {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Stars Background */
+        .stars-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
+
+        /* Header with Darker Border */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            position: relative;
+            z-index: 100;
+            border-bottom: 3px solid var(--header-border);
+            background: rgba(47, 79, 79, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            filter: drop-shadow(0 2px 8px rgba(47, 79, 79, 0.3));
+        }
+
+        .logo:hover {
+            transform: scale(1.1) rotate(5deg);
+            filter: drop-shadow(0 4px 12px rgba(47, 79, 79, 0.5));
+        }
+
+        .hamburger {
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            z-index: 1001;
+            transition: transform 0.3s ease;
+        }
+
+        .hamburger:hover {
+            transform: scale(1.1);
+        }
+
+        .hamburger.active {
+            transform: rotate(90deg);
+        }
+
+        /* Full Screen Menu */
+        .fullscreen-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--menu-bg);
+            transform: translateY(-100%);
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: 1000;
+            display: flex;
+        }
+
+        .fullscreen-menu.active {
+            transform: translateY(0);
+        }
+
+        .menu-left {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            border-right: 2px solid rgba(255, 255, 240, 0.2);
+        }
+
+        .menu-right {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem 2rem;
+        }
+
+        .menu-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .social-links {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+        }
+
+        .social-link {
+            color: var(--primary-light);
+            text-decoration: none;
+            font-size: 1.8rem;
+            font-weight: 600;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            padding: 0;
+            transition: all 0.3s ease;
+            width: 100%;
+            height: 25%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .social-link:nth-child(1) {
+            background: rgba(47, 79, 79, 1);
+        }
+
+        /* Darkest */
+        .social-link:nth-child(2) {
+            background: rgba(47, 79, 79, 0.8);
+        }
+
+        .social-link:nth-child(3) {
+            background: rgba(47, 79, 79, 0.6);
+        }
+
+        .social-link:nth-child(4) {
+            background: rgba(47, 79, 79, 0.4);
+        }
+
+        /* Lightest */
+
+        .social-link:hover {
+            background: rgba(64, 224, 208, 0.3);
+            transform: scale(1.02);
+            color: var(--accent-turquoise);
+        }
+
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-item {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: var(--primary-light);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .nav-item:hover {
+            color: var(--primary-dark);
+            background: var(--primary-light);
+            transform: scale(1.05);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary-dark);
+            color: var(--primary-light);
+            border: 2px solid var(--primary-light);
+            padding: 1rem;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            z-index: 100;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(180deg);
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        /* Main Content - More Centered */
+        .content {
+            display: flex;
+            align-items: center;
+            min-height: calc(100vh - 120px);
+            padding: 0 4rem;
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .content-left {
+            flex: 1;
+            max-width: 500px;
+            padding-right: 3rem;
+        }
+
+        .about-label {
+            background: rgba(47, 79, 79, 0.3);
+            color: var(--primary-light);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: bold;
+            border: 1px solid var(--primary-light);
+        }
+
+        .main-title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+        }
+
+        .main-title .highlight {
+            color: var(--accent-turquoise);
+        }
+
+        .description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 240, 0.9);
+        }
+
+        .content-right {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .mac-container {
+            width: 450px;
+            height: 360px;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        /* New Section Styling */
+        .portfolio-section {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            border-top: 1px solid var(--section-border-color);
+            margin-top: 4rem;
+            background: var(--section-bg-dark);
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-header {
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: var(--primary-light);
+        }
+
+        .section-title .highlight {
+            color: var(--accent-turquoise);
+        }
+
+        .section-description {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 240, 0.8);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* About Extended Section */
+        .about-main-content {
+            /* New wrapper for 50/50 split */
+            display: flex;
+            gap: 3rem;
+            align-items: flex-start;
+            text-align: left;
+            margin-bottom: 3rem;
+            /* Space between 50/50 and 100% tech divs */
+        }
+
+        .about-left-column {
+            flex: 1;
+            /* Takes 50% width */
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .about-extended-text {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: rgba(255, 255, 240, 0.9);
+        }
+
+        .about-extended-tech {
+            /* Now takes 100% width below the 50/50 split */
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            /* Adjusted for 4 columns */
+            gap: 1.5rem;
+            width: 100%;
+            /* Ensure it takes full width */
+        }
+
+        .tech-container {
+            background: rgba(47, 79, 79, 0.5);
+            border: 1px solid var(--accent-turquoise);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .tech-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(64, 224, 208, 0.3);
+            background: rgba(47, 79, 79, 0.7);
+        }
+
+        .tech-container h3 {
+            font-size: 1.3rem;
+            color: var(--accent-turquoise);
+            margin-bottom: 0.5rem;
+        }
+
+        .tech-container p {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 240, 0.7);
+        }
+
+        .svg-interactive-container {
+            flex: 1;
+            /* Takes 50% width */
+            height: 400px;
+            /* Fixed height for the canvas */
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--accent-turquoise);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* SVG Animation for interactive element */
+        .code-flow-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .code-line {
+            stroke: var(--accent-turquoise);
+            stroke-width: 2;
+            fill: none;
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: drawLine 3s linear infinite;
+        }
+
+        .data-point {
+            fill: var(--primary-light);
+            animation: pulseData 2s ease-in-out infinite;
+        }
+
+        @keyframes drawLine {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes pulseData {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+
+            50% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+        }
+
+
+        /* Projects Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .project-item {
+            background: rgba(47, 79, 79, 0.5);
+            border: 1px solid var(--accent-turquoise);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: left;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .project-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 25px rgba(64, 224, 208, 0.3);
+            background: rgba(47, 79, 79, 0.7);
+        }
+
+        .project-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 240, 0.1);
+        }
+
+        .project-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .project-description {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 240, 0.7);
+            margin-bottom: 1rem;
+        }
+
+        .project-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            align-items: center;
+        }
+
+        .project-link {
+            display: inline-block;
+            background: var(--accent-turquoise);
+            color: var(--primary-dark);
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .project-link:hover {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            transform: translateY(-3px);
+        }
+
+        .github-icon {
+            width: 24px;
+            height: 24px;
+            fill: var(--primary-light);
+            transition: fill 0.3s ease;
+        }
+
+        .github-icon:hover {
+            fill: var(--accent-turquoise);
+        }
+
+        .used-languages {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 240, 0.6);
+            margin-top: 1rem;
+        }
+
+        /* Resume Section */
+        .resume-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .download-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--accent-salmon);
+            color: var(--primary-dark);
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .download-button:hover {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(250, 128, 114, 0.4);
+        }
+
+        .download-button svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--primary-dark);
+        }
+
+        .resume-highlights {
+            background: var(--section-bg-dark);
+            border: 1px solid var(--section-border-color);
+            border-radius: 10px;
+            padding: 2rem;
+            max-width: 700px;
+            text-align: left;
+        }
+
+        .resume-highlights h3 {
+            font-size: 1.8rem;
+            color: var(--primary-light);
+            margin-bottom: 1rem;
+        }
+
+        .resume-highlights ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .resume-highlights ul li {
+            font-size: 1.05rem;
+            color: rgba(255, 255, 240, 0.9);
+            margin-bottom: 0.8rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .resume-highlights ul li::before {
+            content: '•';
+            color: var(--accent-turquoise);
+            font-size: 1.5rem;
+            position: absolute;
+            left: 0;
+            top: -2px;
+        }
+
+        /* Contact Section */
+        .contact-section-content {
+            display: flex;
+            flex-direction: row;
+            gap: 3rem;
+            text-align: left;
+            align-items: stretch;
+            justify-content: center;
+            align-items: center;
+            /* Ensure columns stretch to equal height */
+        }
+
+        .contact-left {
+            flex: 0 0 30%;
+            /* 30% width */
+            padding-right: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .contact-right {
+            flex: 0 0 70%;
+            /* 70% width */
+            padding-left: 2rem;
+            border-left: 1px solid var(--section-border-color);
+        }
+
+        .contact-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-light);
+            margin-bottom: 2rem;
+        }
+
+        .contact-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 240, 0.9);
+            margin-bottom: 2rem;
+        }
+
+        .interest-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 2rem;
+        }
+
+        .interest-tag {
+            background: rgba(64, 224, 208, 0.2);
+            border: 1px solid var(--accent-turquoise);
+            color: var(--accent-turquoise);
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .interest-tag:hover {
+            background: var(--accent-turquoise);
+            color: var(--primary-dark);
+            transform: translateY(-3px);
+        }
+
+        .contact-email {
+            font-size: 1.2rem;
+            color: var(--primary-light);
+            margin-bottom: 1.5rem;
+            display: block;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .contact-email:hover {
+            color: var(--accent-turquoise);
+            text-decoration: underline;
+        }
+
+        .contact-social-icons {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .contact-social-icon {
+            width: 36px;
+            height: 36px;
+            fill: var(--primary-light);
+            transition: fill 0.3s ease, transform 0.3s ease;
+        }
+
+        .contact-social-icon:hover {
+            fill: var(--accent-turquoise);
+            transform: translateY(-5px);
+        }
+
+        /* Theme specific adjustments for new sections */
+        .theme-neon {
+            --primary-dark: #0a0a0a;
+            --primary-light: #00ff00;
+            --accent-turquoise: #ffff00;
+            --accent-salmon: #ff00ff;
+            --header-border: #003300;
+            --menu-bg: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #00ff00 100%);
+            --gradient-bg: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 25%, #2a2a2a 50%, #0a0a0a 75%, #1a1a1a 100%);
+            --section-bg-dark: rgba(0, 0, 0, 0.5);
+            --section-border-color: rgba(0, 255, 0, 0.2);
+        }
+
+        .theme-neon .section-title .highlight,
+        .theme-neon .tech-container h3,
+        .theme-neon .project-link,
+        .theme-neon .download-button,
+        .theme-neon .interest-tag {
+            color: var(--accent-turquoise);
+            background: var(--primary-dark);
+        }
+
+        .theme-neon .project-link:hover,
+        .theme-neon .download-button:hover,
+        .theme-neon .interest-tag:hover {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .theme-neon .download-button svg {
+            stroke: var(--primary-dark);
+        }
+
+        .theme-neon .github-icon:hover,
+        .theme-neon .contact-social-icon:hover {
+            fill: var(--accent-turquoise);
+        }
+
+        .theme-neon .resume-highlights ul li::before {
+            color: var(--accent-turquoise);
+        }
+
+        .theme-neon .about-extended-text,
+        .theme-neon .tech-container p,
+        .theme-neon .project-description,
+        .theme-neon .used-languages,
+        .theme-neon .resume-highlights ul li,
+        .theme-neon .contact-description,
+        .theme-neon .contact-email {
+            color: var(--primary-light);
+        }
+
+        .theme-neon .tech-container,
+        .theme-neon .project-item,
+        .theme-neon .interest-tag {
+            border-color: var(--accent-turquoise);
+        }
+
+        .theme-neon .svg-interactive-container {
+            border-color: var(--accent-turquoise);
+        }
+
+        .theme-neon .code-line {
+            stroke: var(--accent-turquoise);
+        }
+
+        .theme-neon .data-point {
+            fill: var(--primary-light);
+        }
+
+
+        .theme-minty {
+            --primary-dark: #1a4d4d;
+            --primary-light: #e6ffff;
+            --accent-turquoise: #66ffcc;
+            --accent-salmon: #ff9999;
+            --header-border: #0d2626;
+            --menu-bg: linear-gradient(135deg, #1a4d4d 0%, #2d6666 50%, #66ffcc 100%);
+            --gradient-bg: linear-gradient(135deg, #1a4d4d 0%, #2d6666 25%, #408080 50%, #1a4d4d 75%, #2d6666 100%);
+            --section-bg-dark: rgba(26, 77, 77, 0.5);
+            --section-border-color: rgba(102, 255, 204, 0.2);
+        }
+
+        .theme-minty .section-title .highlight,
+        .theme-minty .tech-container h3,
+        .theme-minty .project-link,
+        .theme-minty .download-button,
+        .theme-minty .interest-tag {
+            color: var(--accent-turquoise);
+            background: var(--primary-dark);
+        }
+
+        .theme-minty .project-link:hover,
+        .theme-minty .download-button:hover,
+        .theme-minty .interest-tag:hover {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .theme-minty .download-button svg {
+            stroke: var(--primary-dark);
+        }
+
+        .theme-minty .github-icon:hover,
+        .theme-minty .contact-social-icon:hover {
+            fill: var(--accent-turquoise);
+        }
+
+        .theme-minty .resume-highlights ul li::before {
+            color: var(--accent-turquoise);
+        }
+
+        .theme-minty .about-extended-text,
+        .theme-minty .tech-container p,
+        .theme-minty .project-description,
+        .theme-minty .used-languages,
+        .theme-minty .resume-highlights ul li,
+        .theme-minty .contact-description,
+        .theme-minty .contact-email {
+            color: var(--primary-light);
+        }
+
+        .theme-minty .tech-container,
+        .theme-minty .project-item,
+        .theme-minty .interest-tag {
+            border-color: var(--accent-turquoise);
+        }
+
+        .theme-minty .svg-interactive-container {
+            border-color: var(--accent-turquoise);
+        }
+
+        .theme-minty .code-line {
+            stroke: var(--accent-turquoise);
+        }
+
+        .theme-minty .data-point {
+            fill: var(--primary-light);
+        }
+
+
+        .theme-newspaper {
+            --primary-dark: #f5f5f5;
+            --primary-light: #1a1a1a;
+            --accent-turquoise: #333333;
+            --accent-salmon: #666666;
+            --header-border: #cccccc;
+            --menu-bg: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 50%, #cccccc 100%);
+            --gradient-bg: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 25%, #dbdbdb 50%, #f5f5f5 75%, #e8e8e8 100%);
+            --section-bg-dark: rgba(245, 245, 245, 0.8);
+            --section-border-color: rgba(26, 26, 26, 0.1);
+        }
+
+        .theme-newspaper .main-title,
+        .theme-newspaper .description,
+        .theme-newspaper .about-label,
+        .theme-newspaper .section-title,
+        .theme-newspaper .section-description,
+        .theme-newspaper .project-name,
+        .theme-newspaper .project-description,
+        .theme-newspaper .resume-highlights h3,
+        .theme-newspaper .resume-highlights ul li,
+        .theme-newspaper .contact-title,
+        .theme-newspaper .contact-description,
+        .theme-newspaper .contact-email,
+        .theme-newspaper .about-extended-text,
+        .theme-newspaper .tech-container p,
+        .theme-newspaper .used-languages {
+            color: var(--primary-light);
+        }
+
+        .theme-newspaper .about-label {
+            background: rgba(26, 26, 26, 0.1);
+            border-color: var(--primary-light);
+        }
+
+        .theme-newspaper .section-title .highlight,
+        .theme-newspaper .tech-container h3,
+        .theme-newspaper .resume-highlights ul li::before,
+        .theme-newspaper .interest-tag {
+            color: var(--accent-turquoise);
+        }
+
+        .theme-newspaper .project-link,
+        .theme-newspaper .download-button {
+            background: var(--accent-turquoise);
+            color: var(--primary-dark);
+        }
+
+        .theme-newspaper .project-link:hover,
+        .theme-newspaper .download-button:hover {
+            background: var(--accent-salmon);
+            color: var(--primary-dark);
+        }
+
+        .theme-newspaper .download-button svg {
+            stroke: var(--primary-dark);
+        }
+
+        .theme-newspaper .github-icon,
+        .theme-newspaper .contact-social-icon {
+            fill: var(--primary-light);
+        }
+
+        .theme-newspaper .github-icon:hover,
+        .theme-newspaper .contact-social-icon:hover {
+            fill: var(--accent-turquoise);
+        }
+
+        .theme-newspaper .tech-container,
+        .theme-newspaper .project-item,
+        .theme-newspaper .resume-highlights,
+        .theme-newspaper .interest-tag {
+            background: rgba(245, 245, 245, 0.8);
+            border-color: rgba(26, 26, 26, 0.1);
+        }
+
+        .theme-newspaper .svg-interactive-container {
+            border-color: var(--accent-turquoise);
+        }
+
+        .theme-newspaper .code-line {
+            stroke: var(--accent-turquoise);
+        }
+
+        .theme-newspaper .data-point {
+            fill: var(--primary-light);
+        }
+
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+                text-align: center;
+                padding: 2rem 1rem;
+            }
+
+            .content-left {
+                padding-right: 0;
+                margin-bottom: 2rem;
+                max-width: 100%;
+            }
+
+            .main-title {
+                font-size: 2.5rem;
+            }
+
+            .mac-container {
+                width: 350px;
+                height: 280px;
+            }
+
+            .fullscreen-menu {
+                flex-direction: column;
+            }
+
+            .menu-left {
+                width: 100%;
+                height: 50%;
+                border-right: none;
+                border-bottom: 2px solid rgba(255, 255, 240, 0.2);
+            }
+
+            .menu-right {
+                width: 100%;
+                height: 50%;
+            }
+
+            .nav-item {
+                font-size: 2.5rem;
+            }
+
+            .social-link {
+                writing-mode: horizontal-tb;
+                font-size: 1.2rem;
+                width: 25%;
+                height: 100%;
+            }
+
+            .social-links {
+                flex-direction: row;
+            }
+
+            /* New sections responsive */
+            .about-main-content {
+                /* Adjusted for new wrapper */
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .about-left-column {
+                width: 100%;
+            }
+
+            .about-extended-tech {
+                grid-template-columns: 1fr;
+                /* Stack on small screens */
+            }
+
+            .svg-interactive-container {
+                height: 300px;
+            }
+
+            .contact-section-content {
+                flex-direction: row;
+            }
+
+            .contact-left,
+            .contact-right {
+                width: 100%;
+                padding: 0;
+                border-left: none;
+                border-top: 1px solid var(--section-border-color);
+                padding-top: 2rem;
+            }
+
+            .contact-left {
+                padding-bottom: 2rem;
+                border-bottom: 1px solid var(--section-border-color);
+            }
+
+            .contact-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Splash Screen -->
+    <div class="splash-screen" id="splashScreen">
+        <div class="splash-text">
+            <span style="--i:0">Z</span>
+            <span style="--i:1">A</span>
+            <span style="--i:2">R</span>
+            <span style="--i:3">N</span>
+            <span style="--i:4">I</span>
+            <span style="--i:5">G</span>
+            <span style="--i:6">O</span>
+            <span style="--i:7">R</span>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container" id="mainContainer">
+        <!-- Stars Background -->
+        <div class="stars-bg" id="starsBg"></div>
+
+        <!-- Header with Darker Border -->
+        <header class="header">
+            <!-- Simple Z Logo SVG -->
+            <svg class="logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <rect x="10" y="10" width="80" height="80" rx="10" fill="#2F4F4F" />
+                <text x="50" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold"
+                    text-anchor="middle" fill="#FFFFF0">Z</text>
+            </svg>
+
+            <!-- Hamburger Menu SVG -->
+            <svg class="hamburger" id="hamburger" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 12 L32 12 M8 20 L32 20 M8 28 L32 28" stroke="#FFFFF0" stroke-width="3"
+                    stroke-linecap="round" />
+            </svg>
+        </header>
+
+        <!-- Full Screen Menu -->
+        <div class="fullscreen-menu" id="fullscreenMenu">
+            <!-- Close Button SVG -->
+            <svg class="menu-close" id="menuClose" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 12 L28 28 M28 12 L12 28" stroke="#FFFFF0" stroke-width="3" stroke-linecap="round" />
+            </svg>
+
+            <!-- Left Side - Social Links Full Width -->
+            <div class="menu-left">
+                <div class="social-links">
+                    <a href="https://github.com/zarnigoor" class="social-link" target="_blank">GitHub</a>
+                    <a href="https://www.linkedin.com/in/zarnigor-umaraliyeva-282946323/" class="social-link"
+                        target="_blank">LinkedIn</a>
+                    <a href="https://t.me/innvaluable" class="social-link" target="_blank">Telegram</a>
+                    <a href="https://instagram.com/innnvaluable" class="social-link" target="_blank">Instagram</a>
+                </div>
+            </div>
+
+            <!-- Right Side - Navigation -->
+            <div class="menu-right">
+                <div class="nav-links">
+                    <a href="#home" class="nav-item">Home</a>
+                    <a href="#about-extended" class="nav-item">About</a> <!-- New About section link -->
+                    <a href="#work" class="nav-item">Work</a>
+                    <a href="#resume" class="nav-item">Resume</a>
+                    <a href="#contact" class="nav-item">Contact</a> <!-- New Contact section link -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content (Home/Initial About Me Section) -->
+        <main class="content" id="home">
+            <div class="content-left">
+                <div class="about-label">About Me</div>
+                <h1 class="main-title">
+                    Hello I am <span class="highlight">Zarnigor Umaraliyeva</span>
+                </h1>
+                <p class="description">
+                    A fullstack developer passionate about creating innovative digital solutions and helping startups
+                    launch and grow their products. I specialize in modern web technologies and deliver exceptional user
+                    experiences through clean, efficient code.
+                </p>
+            </div>
+            <div class="content-right">
+                <div class="mac-container">
+                    <!-- MacBook Pro SVG -->
+                    <svg width="450" height="360" viewBox="0 0 450 360" xmlns="http://www.w3.org/2000/svg">
+                        <!-- MacBook Base -->
+                        <ellipse cx="225" cy="340" rx="180" ry="12" fill="rgba(47, 79, 79, 0.3)" />
+
+                        <!-- MacBook Bottom -->
+                        <rect x="45" y="290" width="360" height="45" rx="8" fill="#2c2c2c" />
+                        <rect x="50" y="295" width="350" height="35" rx="5" fill="#1a1a1a" />
+
+                        <!-- MacBook Screen -->
+                        <rect x="70" y="70" width="310" height="230" rx="12" fill="#1a1a1a" />
+                        <rect x="80" y="80" width="290" height="180" rx="8" fill="#0a0a0a" />
+
+                        <!-- Screen Content -->
+                        <rect x="80" y="80" width="290" height="22" fill="#2F4F4F" />
+                        <circle cx="92" cy="91" r="3" fill="#ff5f57" />
+                        <circle cx="105" cy="91" r="3" fill="#ffbd2e" />
+                        <circle cx="118" cy="91" r="3" fill="#28ca42" />
+
+                        <!-- Code Editor -->
+                        <rect x="80" y="102" width="70" height="158" fill="#1e1e1e" />
+                        <rect x="150" y="102" width="220" height="158" fill="#0d1117" />
+
+                        <!-- Code Lines -->
+                        <rect x="155" y="115" width="90" height="2" fill="#2F4F4F">
+                            <animate attributeName="width" values="0;90;90" dur="2s" repeatCount="indefinite" />
+                        </rect>
+                        <rect x="155" y="125" width="70" height="2" fill="#FFFFF0">
+                            <animate attributeName="width" values="0;70;70" dur="2s" begin="0.5s"
+                                repeatCount="indefinite" />
+                        </rect>
+                        <rect x="155" y="135" width="100" height="2" fill="#2F4F4F">
+                            <animate attributeName="width" values="0;100;100" dur="2s" begin="1s"
+                                repeatCount="indefinite" />
+                        </rect>
+
+                        <!-- Terminal -->
+                        <rect x="155" y="200" width="210" height="55" fill="#000" />
+                        <text x="160" y="215" font-family="monospace" font-size="7" fill="#2F4F4F">$ npm start</text>
+                        <text x="160" y="230" font-family="monospace" font-size="6" fill="#FFFFF0">Starting
+                            server...</text>
+                        <text x="160" y="245" font-family="monospace" font-size="6" fill="#2F4F4F">✓ Compiled!</text>
+
+                        <!-- Apple Logo -->
+                        <path d="M220 85 Q225 80 230 85 Q235 90 230 95 Q225 100 220 95 Q215 90 220 85" fill="#FFFFF0" />
+                    </svg>
+                </div>
+            </div>
+        </main>
+
+
+
+
+
+
+
+
+
+
+
+ <!-- Theme Toggle -->
+        <button class="theme-toggle" onclick="toggleTheme()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+        </button>
+    </div>
+
+    <script>
+        // Create Stars
+        function createStars() {
+            const starsBg = document.getElementById('starsBg');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsBg.appendChild(star);
+            }
+        }
+
+        // Menu Toggle
+        const hamburger = document.getElementById('hamburger');
+        const fullscreenMenu = document.getElementById('fullscreenMenu');
+        const menuClose = document.getElementById('menuClose');
+
+        function openMenu() {
+            fullscreenMenu.classList.add('active');
+            hamburger.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMenu() {
+            fullscreenMenu.classList.remove('active');
+            hamburger.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        hamburger.addEventListener('click', openMenu);
+        menuClose.addEventListener('click', closeMenu);
+
+        // Close menu when clicking nav items
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.getAttribute('href').startsWith('#')) {
+                    closeMenu();
+                }
+            });
+        });
+
+        // Theme Toggle
+        let currentTheme = 0;
+        const themes = ['', 'theme-neon', 'theme-minty', 'theme-newspaper'];
+
+        function toggleTheme() {
+            document.body.className = '';
+            currentTheme = (currentTheme + 1) % themes.length;
+            if (themes[currentTheme]) {
+                document.body.classList.add(themes[currentTheme]);
+            }
+        }
+
+        // Initialize
+        createStars();
+
+        // Logo click animation
+        document.querySelector('.logo').addEventListener('click', () => {
+            document.querySelector('.logo').style.transform = 'scale(1.2) rotate(360deg)';
+            setTimeout(() => {
+                document.querySelector('.logo').style.transform = '';
+            }, 600);
+        });
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+        <!-- Extended About Me Section with SVG Interactive Element -->
+        <section id="about-extended" class="portfolio-section">
+            <div class="section-header">
+                <h2 class="section-title">More <span class="highlight">About Me</span></h2>
+                <p class="section-description">Discover my passion for development and the technologies I master.</p>
+            </div>
+            <div class="about-main-content"> <!-- New wrapper for 50/50 split -->
+                <div class="about-left-column">
+                    <div class="about-extended-text">
+                        <p>I'm a Full-Stack Developer who loves turning ideas into powerful, user-centered web
+                            experiences. With 1+ years of hands-on experience, I’ve worked on real-world projects and
+                            startup MVPs—building fast, scalable, and beautiful products from scratch.</p>
+                        <p>On the frontend, I work with React, Next.js, TypeScript, JavaScript, HTML, CSS, and Sass to
+                            design smooth, responsive interfaces. On the backend, I use Node.js, NestJS, MongoDB, and
+                            PostgreSQL to build robust, secure, and scalable systems. I also integrate CI/CD pipelines
+                            to streamline development and ensure clean, reliable deployments.</p>
+                        <p>For me, it’s not just about writing code—it’s about solving real problems, creating value,
+                            and delivering digital products that make a difference. I’m always excited to collaborate,
+                            explore new ideas, and bring meaningful projects to life.</p>
+                        <p>Let’s build something great together.</p>
+                    </div>
+                </div>
+                <div class="svg-interactive-container">
+                    <svg class="code-flow-svg" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="var(--accent-turquoise)" />
+                            </marker>
+                        </defs>
+
+                        <!-- Background grid -->
+                        <rect x="0" y="0" width="600" height="400" fill="rgba(0,0,0,0.1)" />
+                        <line x1="0" y1="50" x2="600" y2="50" stroke="rgba(255,255,240,0.05)" stroke-width="1" />
+                        <line x1="0" y1="100" x2="600" y2="100" stroke="rgba(255,255,240,0.05)" stroke-width="1" />
+                        <line x1="0" y1="150" x2="600" y2="150" stroke="rgba(255,255,240,0.05)" stroke-width="1" />
+                        <line x1="0" y1="200" x2="600" y2="200" stroke="rgba(255,255,240,0.05)" stroke-width="1" />
+                        <line x1="0" y1="250" x2="600" y2="250" stroke="rgba(255,255,240,0.05)" stroke-width="1" />
+                        <line x1="0" y1="300" x2="600" y2="300" stroke="rgba(255,255,240,0.05)" stroke-width="1" />
+                        <line x1="0" y1="350" x2="600" y2="350" stroke="rgba(255,255,240,0.05)" stroke-width="1" />
+
+                        <!-- Animated code lines -->
+                        <polyline points="50,50 150,100 50,150 150,200 50,250" class="code-line"
+                            style="animation-delay: 0s;" />
+                        <polyline points="200,70 300,120 200,170 300,220 200,270" class="code-line"
+                            style="animation-delay: 0.5s;" />
+                        <polyline points="350,90 450,140 350,190 450,240 350,290" class="code-line"
+                            style="animation-delay: 1s;" />
+
+                        <!-- Data points -->
+                        <circle cx="100" cy="75" r="8" class="data-point" style="animation-delay: 0s;" />
+                        <circle cx="250" cy="145" r="8" class="data-point" style="animation-delay: 0.7s;" />
+                        <circle cx="400" cy="215" r="8" class="data-point" style="animation-delay: 1.4s;" />
+
+                        <!-- Text labels (fixed curly brace issue) -->
+                        <text x="20" y="30" font-family="monospace" font-size="16" fill="var(--primary-light)">&lt;Code
+                            /&gt;</text>
+                        <text x="500" y="370" font-family="monospace" font-size="16"
+                            fill="var(--primary-light)">&lt;Data /&gt;</text>
+                        <text x="250" y="30" font-family="monospace" font-size="16"
+                            fill="var(--primary-light)">&lt;Logic /&gt;</text>
+                        <text x="450" y="100" font-family="monospace" font-size="16"
+                            fill="var(--primary-light)">&lt;Deploy /&gt;</text>
+                    </svg>
+                </div>
+            </div>
+            <!-- Tech containers moved outside for 100% width below 50/50 split -->
+            <div class="about-extended-tech">
+                <div class="tech-container">
+                    <h3>Frontend</h3>
+                    <p>React, Next.js, TypeScript, JavaScript, HTML, CSS, Sass</p>
+                </div>
+                <div class="tech-container">
+                    <h3>Backend & Database</h3>
+                    <p>Node.js, NestJS, MongoDB, PostgreSQL</p>
+                </div>
+                <div class="tech-container">
+                    <h3>Design</h3>
+                    <p>Figma, Photoshop, UI/UX Principles</p>
+                </div>
+                <div class="tech-container">
+                    <h3>DevOps</h3>
+                    <p>CI/CD Pipelines, Deployment Strategies</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- My Works Section -->
+        <section id="work" class="portfolio-section">
+            <div class="section-header">
+                <h2 class="section-title">My <span class="highlight">Works</span></h2>
+                <p class="section-description">Explore a selection of my projects, showcasing my skills and passion for
+                    development.</p>
+            </div>
+            <div class="projects-grid">
+                <!-- Project Item 1: AI Chat -->
+                <div class="project-item">
+                    <img src="/placeholder.svg?height=200&width=300" alt="AI Chat Project" class="project-image">
+                    <h3 class="project-name">AI Chat Application</h3>
+                    <p class="project-description">An intelligent chat application powered by AI, featuring real-time
+                        responses and natural language processing.</p>
+                    <div class="project-links">
+                        <a href="#" target="_blank" class="project-link">Visit</a>
+                        <a href="https://github.com/zarnigoor" target="_blank">
+                            <svg class="github-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.542-1.36-1.32-1.725-1.32-1.725-1.08-.745.08-.73.08-.73 1.19.085 1.82 1.22 1.82 1.22 1.06 1.81 2.78 1.28 3.45.98.108-.77.42-1.28.76-1.57-2.64-.3-5.41-1.32-5.41-5.93 0-1.31.465-2.38 1.235-3.22-.12-.3-.53-1.52.12-3.18 0 0 1-.32 3.3-.12 1.1-.3 2.25-.45 3.4-.45 1.15 0 2.3.15 3.4.45 2.3-1.2 3.3.12 3.3.12.65 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.62-2.77 5.62-5.42 5.92.42.36.81 1.09.81 2.2 0 1.57-.015 2.84-.015 3.22 0 .31.21.69.82.57C20.562 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12z" />
+                            </svg>
+                        </a>
+                    </div>
+                    <p class="used-languages">Used Languages: [Fill your languages here]</p>
+                </div>
+                <!-- Project Item 2: E-commerce Platform -->
+                <div class="project-item">
+                    <img src="/placeholder.svg?height=200&width=300" alt="E-commerce Project" class="project-image">
+                    <h3 class="project-name">E-commerce Platform</h3>
+                    <p class="project-description">A robust online store with secure payment integration, product
+                        management, and user authentication.</p>
+                    <div class="project-links">
+                        <a href="#" target="_blank" class="project-link">Visit</a>
+                        <a href="https://github.com/zarnigoor" target="_blank">
+                            <svg class="github-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.542-1.36-1.32-1.725-1.32-1.725-1.08-.745.08-.73.08-.73 1.19.085 1.82 1.22 1.82 1.22 1.06 1.81 2.78 1.28 3.45.98.108-.77.42-1.28.76-1.57-2.64-.3-5.41-1.32-5.41-5.93 0-1.31.465-2.38 1.235-3.22-.12-.3-.53-1.52.12-3.18 0 0 1-.32 3.3-.12 1.1-.3 2.25-.45 3.4-.45 1.15 0 2.3.15 3.4.45 2.3-1.2 3.3.12 3.3.12.65 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.62-2.77 5.62-5.42 5.92.42.36.81 1.09.81 2.2 0 1.57-.015 2.84-.015 3.22 0 .31.21.69.82.57C20.562 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12z" />
+                            </svg>
+                        </a>
+                    </div>
+                    <p class="used-languages">Used Languages: [Fill your languages here]</p>
+                </div>
+                <!-- Project Item 3: E-jek (Online Ride-Hailing) -->
+                <div class="project-item">
+                    <img src="/placeholder.svg?height=200&width=300" alt="E-jek Project" class="project-image">
+                    <h3 class="project-name">E-jek Ride-Hailing App</h3>
+                    <p class="project-description">A mobile-first application for online ride-hailing and delivery
+                        services, with real-time tracking.</p>
+                    <div class="project-links">
+                        <a href="#" target="_blank" class="project-link">Visit</a>
+                        <a href="https://github.com/zarnigoor" target="_blank">
+                            <svg class="github-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.542-1.36-1.32-1.725-1.32-1.725-1.08-.745.08-.73.08-.73 1.19.085 1.82 1.22 1.82 1.22 1.06 1.81 2.78 1.28 3.45.98.108-.77.42-1.28.76-1.57-2.64-.3-5.41-1.32-5.41-5.93 0-1.31.465-2.38 1.235-3.22-.12-.3-.53-1.52.12-3.18 0 0 1-.32 3.3-.12 1.1-.3 2.25-.45 3.4-.45 1.15 0 2.3.15 3.4.45 2.3-1.2 3.3.12 3.3.12.65 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.62-2.77 5.62-5.42 5.92.42.36.81 1.09.81 2.2 0 1.57-.015 2.84-.015 3.22 0 .31.21.69.82.57C20.562 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12z" />
+                            </svg>
+                        </a>
+                    </div>
+                    <p class="used-languages">Used Languages: [Fill your languages here]</p>
+                </div>
+                <!-- Project Item 4 -->
+                <div class="project-item">
+                    <img src="/placeholder.svg?height=200&width=300" alt="Project 4" class="project-image">
+                    <h3 class="project-name">Custom CRM System</h3>
+                    <p class="project-description">A tailored customer relationship management system to streamline
+                        business operations and client interactions.</p>
+                    <div class="project-links">
+                        <a href="#" target="_blank" class="project-link">Visit</a>
+                        <a href="https://github.com/zarnigoor" target="_blank">
+                            <svg class="github-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.542-1.36-1.32-1.725-1.32-1.725-1.08-.745.08-.73.08-.73 1.19.085 1.82 1.22 1.82 1.22 1.06 1.81 2.78 1.28 3.45.98.108-.77.42-1.28.76-1.57-2.64-.3-5.41-1.32-5.41-5.93 0-1.31.465-2.38 1.235-3.22-.12-.3-.53-1.52.12-3.18 0 0 1-.32 3.3-.12 1.1-.3 2.25-.45 3.4-.45 1.15 0 2.3.15 3.4.45 2.3-1.2 3.3.12 3.3.12.65 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.62-2.77 5.62-5.42 5.92.42.36.81 1.09.81 2.2 0 1.57-.015 2.84-.015 3.22 0 .31.21.69.82.57C20.562 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12z" />
+                            </svg>
+                        </a>
+                    </div>
+                    <p class="used-languages">Used Languages: [Fill your languages here]</p>
+                </div>
+                <!-- Project Item 5 -->
+                <div class="project-item">
+                    <img src="/placeholder.svg?height=200&width=300" alt="Project 5" class="project-image">
+                    <h3 class="project-name">Portfolio Website</h3>
+                    <p class="project-description">A personal portfolio website to showcase projects, skills, and
+                        professional experience.</p>
+                    <div class="project-links">
+                        <a href="#" target="_blank" class="project-link">Visit</a>
+                        <a href="https://github.com/zarnigoor" target="_blank">
+                            <svg class="github-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.542-1.36-1.32-1.725-1.32-1.725-1.08-.745.08-.73.08-.73 1.19.085 1.82 1.22 1.82 1.22 1.06 1.81 2.78 1.28 3.45.98.108-.77.42-1.28.76-1.57-2.64-.3-5.41-1.32-5.41-5.93 0-1.31.465-2.38 1.235-3.22-.12-.3-.53-1.52.12-3.18 0 0 1-.32 3.3-.12 1.1-.3 2.25-.45 3.4-.45 1.15 0 2.3.15 3.4.45 2.3-1.2 3.3.12 3.3.12.65 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.62-2.77 5.62-5.42 5.92.42.36.81 1.09.81 2.2 0 1.57-.015 2.84-.015 3.22 0 .31.21.69.82.57C20.562 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12z" />
+                            </svg>
+                        </a>
+                    </div>
+                    <p class="used-languages">Used Languages: [Fill your languages here]</p>
+                </div>
+                <!-- Project Item 6 -->
+                <div class="project-item">
+                    <img src="/placeholder.svg?height=200&width=300" alt="Project 6" class="project-image">
+                    <h3 class="project-name">Data Visualization Dashboard</h3>
+                    <p class="project-description">An interactive dashboard for visualizing complex datasets, providing
+                        actionable insights.</p>
+                    <div class="project-links">
+                        <a href="#" target="_blank" class="project-link">Visit</a>
+                        <a href="https://github.com/zarnigoor" target="_blank">
+                            <svg class="github-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.542-1.36-1.32-1.725-1.32-1.725-1.08-.745.08-.73.08-.73 1.19.085 1.82 1.22 1.82 1.22 1.06 1.81 2.78 1.28 3.45.98.108-.77.42-1.28.76-1.57-2.64-.3-5.41-1.32-5.41-5.93 0-1.31.465-2.38 1.235-3.22-.12-.3-.53-1.52.12-3.18 0 0 1-.32 3.3-.12 1.1-.3 2.25-.45 3.4-.45 1.15 0 2.3.15 3.4.45 2.3-1.2 3.3.12 3.3.12.65 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.62-2.77 5.62-5.42 5.92.42.36.81 1.09.81 2.2 0 1.57-.015 2.84-.015 3.22 0 .31.21.69.82.57C20.562 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12z" />
+                            </svg>
+                        </a>
+                    </div>
+                    <p class="used-languages">Used Languages: [Fill your languages here]</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resume Section -->
+        <section id="resume" class="portfolio-section">
+            <div class="section-header">
+                <h2 class="section-title">My <span class="highlight">Resume</span></h2>
+                <p class="section-description">Download my full resume or view key highlights below.</p>
+            </div>
+            <div class="resume-content">
+                <a href="/placeholder.pdf" download="Zarnigor_Umaraliyeva_Resume.pdf" class="download-button">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Download Resume (PDF)
+                </a>
+                <div class="resume-highlights">
+                    <h3>Key Highlights:</h3>
+                    <ul>
+                        <li>1+ year of experience in fullstack web development.</li>
+                        <li>Proficient in React, Next.js, Node.js, and various database technologies.</li>
+                        <li>Strong problem-solving skills and a passion for clean code.</li>
+                        <li>Experience leading cross-functional teams and delivering projects on time.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="portfolio-section">
+            <div class="section-header">
+                <h2 class="section-title"><span class="highlight">Connection</span></h2>
+            </div>
+
+
+            <div class="contact-section-content">
+                <h2 class="section-title">Let's <span class="highlight">Connect</span></h2>
+
+                <!-- <div id="cube-container"></div> -->
+
+
+
+                <div class="contact-right">
+                    <h3 class="contact-title">I am always interested about:</h3>
+                    <div class="interest-tags">
+                        <div class="interest-tag">Frontend Development</div>
+                        <div class="interest-tag">Backend Development</div>
+                        <div class="interest-tag">UI/UX Design</div>
+                        <div class="interest-tag">Creativity</div>
+                        <div class="interest-tag">New Business Ideas</div>
+                        <div class="interest-tag">Startups</div>
+                    </div>
+
+                    
+
+
+                    <h3 class="contact-title">Are you minding a project?</h3>
+                    <p class="contact-description">Feel free to reach out if you have a project in mind, a question, or
+                        just want to say hello!</p>
+                    <p class="contact-description">I am always keen on collaborating on new ideas and bringing
+                        meaningful projects to life.</p>
+                    <a href="mailto:zarnigorumaraliyeva8@gmail.com"
+                        class="contact-email">zarnigorumaraliyeva8@gmail.com</a>
+                    <div class="contact-social-icons">
+                        <a href="https://t.me/innvaluable" target="_blank">
+                            <svg class="contact-social-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.54 8.35l-4.15 2.07c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.45.1-.65 0l-1.5-.75c-.2-.1-.45-.1-.65 0l-1.5.75c-.2.1-.4  -->
